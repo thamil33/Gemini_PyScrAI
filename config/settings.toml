@@ -1,0 +1,21 @@
+[firestore]
+project_id = ""
+credentials_path = ""
+
+[simulation]
+scenario_module = "simple_town"
+max_phases = 20
+auto_approve_events = false
+auto_approve_actions = false
+researcher_mode = true
+
+[llm]
+primary_provider = "openrouter"
+
+[llm.providers.openrouter]
+name = "OpenRouter"
+model = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+base_url = "https://openrouter.ai/api/v1"
+api_key_env = "OPENROUTER_API_KEY"
+timeout = 60
+max_retries = 3

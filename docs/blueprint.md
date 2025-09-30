@@ -1,4 +1,4 @@
-### Recommended Initial Steps to Actualizing PyScrAI
+### Recommended Initial Steps to Actualizing ScrAI
 
 A recommended roadmap, broken down into manageable phases, focusing on getting an MVP operational:
 
