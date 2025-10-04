@@ -42,7 +42,8 @@ export function ActorManager({ simulationId }: ActorManagerProps = {}) {
     attributes: {},
     metadata: {},
     active: true,
-    last_updated: null
+    last_updated: null,
+    location: actor.location || undefined
   })) || [];
 
   // Reload simulation when simulationId changes
@@ -260,7 +261,7 @@ export function ActorManager({ simulationId }: ActorManagerProps = {}) {
               className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
             >
               <div className="flex-1">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 mb-2">
                   <h3 className="font-medium text-gray-900 dark:text-white">
                     {actor.name}
                   </h3>
@@ -275,15 +276,36 @@ export function ActorManager({ simulationId }: ActorManagerProps = {}) {
                     {actor.type.toUpperCase()}
                   </span>
                 </div>
-                {actor.attributes && Object.keys(actor.attributes).length > 0 && (
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Attributes: {Object.keys(actor.attributes).join(', ')}
-                  </p>
-                )}
+                
+                {/* Location */}
                 {actor.location && (
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Location: {actor.location.name || JSON.stringify(actor.location)}
-                  </p>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                    📍 <span className="font-medium">Location:</span> {actor.location.name || JSON.stringify(actor.location)}
+                  </div>
+                )}
+                
+                {/* Traits */}
+                {actor.attributes?.traits && Object.keys(actor.attributes.traits).length > 0 && (
+                  <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                    ✨ <span className="font-medium">Traits:</span>{' '}
+                    {Object.entries(actor.attributes.traits as Record<string, unknown>)
+                      .map(([key, value]) => `${key}: ${value}`)
+                      .join(', ')}
+                  </div>
+                )}
+                
+                {/* Skills */}
+                {actor.attributes?.skills && Array.isArray(actor.attributes.skills) && actor.attributes.skills.length > 0 && (
+                  <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                    🎯 <span className="font-medium">Skills:</span> {(actor.attributes.skills as string[]).join(', ')}
+                  </div>
+                )}
+                
+                {/* Role from metadata */}
+                {actor.metadata?.role && (
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    👤 <span className="font-medium">Role:</span> {actor.metadata.role as string}
+                  </div>
                 )}
               </div>
               <div className="flex gap-2">

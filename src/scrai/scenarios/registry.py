@@ -37,5 +37,25 @@ class ScenarioRegistry:
         for metadata in self._scenarios.values():
             yield metadata.scenario
 
+    def list_all(self) -> list[dict[str, str]]:
+        """List all registered scenarios with metadata."""
+        scenarios = []
+        for key, metadata in sorted(self._scenarios.items()):
+            scenario = metadata.scenario
+            # Get description from docstring or use a default
+            description = (
+                scenario.__class__.__doc__.strip().split("\n")[0]
+                if scenario.__class__.__doc__
+                else f"{scenario.__class__.__name__} scenario"
+            )
+            
+            scenarios.append({
+                "name": key,
+                "display_name": scenario.__class__.__name__.replace("Scenario", "").replace("_", " ").title(),
+                "description": description,
+            })
+        
+        return scenarios
+
 
 __all__ = ["ScenarioRegistry", "ScenarioMetadata"]

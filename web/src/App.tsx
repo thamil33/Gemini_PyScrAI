@@ -1,11 +1,8 @@
 import { useEffect } from 'react';
 import { DashboardLayout } from './components/DashboardLayout';
 import { SimulationList } from './components/SimulationList';
-import { ActiveSimulationPanel } from './components/ActiveSimulationPanel';
 import { CreateSimulationForm } from './components/CreateSimulationForm';
-import { ActionComposer } from './components/ActionComposer';
-import { ActorManager } from './components/ActorManager';
-import { PhaseLogViewer } from './components/PhaseLogViewer';
+import { SimulationDashboard } from './components/SimulationDashboard';
 import { ToastContainer } from './components/ToastContainer';
 import { useSimulationStore } from './stores/simulationStore';
 
@@ -40,32 +37,23 @@ function App() {
         </div>
       )}
 
-      <div className="mb-6">
-        <CreateSimulationForm />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Simulations
-          </h2>
-          <SimulationList showRemoveButton={true} />
-        </div>
-
+      {!activeSimulation ? (
+        // Simulation Selection View
         <div className="space-y-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Control Panel
-          </h2>
-          <ActiveSimulationPanel />
-          <ActionComposer />
-        </div>
-      </div>
+          <div className="mb-6">
+            <CreateSimulationForm />
+          </div>
 
-      {activeSimulation && (
-        <div className="mt-6 space-y-6">
-          <ActorManager simulationId={activeSimulation.id} />
-          <PhaseLogViewer />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Your Simulations
+            </h2>
+            <SimulationList showRemoveButton={true} />
+          </div>
         </div>
+      ) : (
+        // Full Dashboard View (when simulation is active)
+        <SimulationDashboard simulation={activeSimulation} />
       )}
     </DashboardLayout>
   );

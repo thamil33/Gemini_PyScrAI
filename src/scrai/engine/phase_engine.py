@@ -11,10 +11,10 @@ from typing import Iterable, List, Optional, Sequence, TYPE_CHECKING
 if TYPE_CHECKING:  # pragma: no cover - type checking only
     from ..scenarios import ScenarioService
 
-from ..data import ActionRepository, ActorRepository, EventRepository, SimulationRepository
+from ..data import Repository
 from ..llm import LLMService
 from ..models.simulation_state import SimulationPhase, SimulationStatus
-from ..models import SimulationState
+from ..models import Action, Actor, Event, SimulationState
 from .context import PhaseContext, PhaseResult
 from .exceptions import PhaseEngineError, PhaseExecutionError
 from .phase_handlers import (
@@ -55,10 +55,10 @@ class PhaseEngine:
     def __init__(
         self,
         *,
-        simulation_repository: SimulationRepository,
-        actor_repository: ActorRepository,
-        event_repository: EventRepository,
-        action_repository: ActionRepository,
+        simulation_repository: Repository[SimulationState],
+        actor_repository: Repository[Actor],
+        event_repository: Repository[Event],
+        action_repository: Repository[Action],
         llm_service: Optional[LLMService] = None,
         scenario_service: Optional["ScenarioService"] = None,
         handlers: Optional[Iterable] = None,

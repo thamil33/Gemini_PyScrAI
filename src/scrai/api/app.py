@@ -8,7 +8,7 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routes import actors, llm, simulations, streams
+from .routes import actors, llm, scenarios, simulations, streams
 
 
 @asynccontextmanager
@@ -43,6 +43,7 @@ app.add_middleware(
 
 # Register routes
 app.include_router(simulations.router, prefix="/api")
+app.include_router(scenarios.router, prefix="/api")
 app.include_router(llm.router, prefix="/api")
 app.include_router(streams.router, prefix="/api")
 app.include_router(actors.router, prefix="/api")

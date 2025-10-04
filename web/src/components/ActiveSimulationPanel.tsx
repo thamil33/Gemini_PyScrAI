@@ -1,4 +1,5 @@
-// Active simulation control panel
+// Simplified active simulation control panel - focused on essential controls only
+// Detailed views moved to SimulationDashboard
 
 import { useSimulationStore } from '../stores/simulationStore';
 
@@ -26,6 +27,7 @@ export function ActiveSimulationPanel() {
       </h2>
       
       <div className="space-y-4">
+        {/* Quick Status Overview */}
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-gray-600 dark:text-gray-400">Scenario:</span>
@@ -33,90 +35,39 @@ export function ActiveSimulationPanel() {
           </div>
           <div>
             <span className="text-gray-600 dark:text-gray-400">Status:</span>
-            <div className="font-medium text-gray-900 dark:text-white capitalize">{activeSimulation.status}</div>
-          </div>
-          <div>
-            <span className="text-gray-600 dark:text-gray-400">Current Phase:</span>
             <div className="font-medium text-gray-900 dark:text-white">
-              {activeSimulation.current_phase.replace('_', ' ')}
+              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
+                activeSimulation.status === 'running'
+                  ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400'
+                  : activeSimulation.status === 'paused'
+                  ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-400'
+              }`}>
+                {activeSimulation.status.toUpperCase()}
+              </span>
             </div>
           </div>
           <div>
-            <span className="text-gray-600 dark:text-gray-400">Cycle Number:</span>
-            <div className="font-medium text-gray-900 dark:text-white">{activeSimulation.phase_number}</div>
-          </div>
-          <div>
-            <span className="text-gray-600 dark:text-gray-400">Pending Actions:</span>
-            <div className="font-medium text-gray-900 dark:text-white">{activeSimulation.pending_action_count}</div>
-          </div>
-          <div>
-            <span className="text-gray-600 dark:text-gray-400">Pending Events:</span>
-            <div className="font-medium text-gray-900 dark:text-white">{activeSimulation.pending_event_count}</div>
-          </div>
-        </div>
-
-        <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Known Actors</h3>
-          {activeSimulation.actors.length === 0 ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400">No actors have been registered yet.</p>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {activeSimulation.actors.map((actor) => (
-                <span
-                  key={actor.id}
-                  className="inline-flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 px-3 py-1 text-xs text-gray-700 dark:text-gray-200"
-                >
-                  <span className="font-medium text-gray-900 dark:text-white">{actor.name}</span>
-                  <span className="uppercase tracking-wide text-gray-500 dark:text-gray-400">{actor.type}</span>
-                </span>
-              ))}
+            <span className="text-gray-600 dark:text-gray-400">Phase:</span>
+            <div className="font-medium text-gray-900 dark:text-white">
+              {activeSimulation.current_phase.replace(/_/g, ' ').toUpperCase()}
             </div>
-          )}
+          </div>
+          <div>
+            <span className="text-gray-600 dark:text-gray-400">Cycle:</span>
+            <div className="font-medium text-gray-900 dark:text-white">#{activeSimulation.phase_number}</div>
+          </div>
         </div>
 
-        <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Pending Actions</h3>
-          {activeSimulation.pending_actions.length === 0 ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400">No actions awaiting resolution.</p>
-          ) : (
-            <ul className="space-y-2">
-              {activeSimulation.pending_actions.map((action) => (
-                <li
-                  key={action.id}
-                  className="rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 px-3 py-2"
-                >
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="font-medium text-gray-900 dark:text-white">
-                      {action.intent}
-                    </div>
-                    <span className="text-xs uppercase tracking-wide text-blue-600 dark:text-blue-300">
-                      {action.status}
-                    </span>
-                  </div>
-                  <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-gray-600 dark:text-gray-400">
-                    <span>Actor: {action.actor_id}</span>
-                    <span>Priority: {action.priority}</span>
-                    <span>
-                      Created:{' '}
-                      {action.created_at
-                        ? new Date(action.created_at).toLocaleString()
-                        : '—'}
-                    </span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
+        {/* Control Buttons */}
         <div className="pt-4 border-t border-gray-200 dark:border-gray-700 flex gap-3">
           {canStart && (
             <button
               onClick={() => startSimulation(activeSimulation.id)}
               disabled={isFetching}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-md font-medium transition-colors"
+              className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md font-medium transition-colors"
             >
-              {isFetching ? 'Starting...' : 'Start Simulation'}
+              {isFetching ? 'Starting...' : '▶️ Start Simulation'}
             </button>
           )}
           
@@ -124,11 +75,16 @@ export function ActiveSimulationPanel() {
             <button
               onClick={() => advanceSimulation(activeSimulation.id)}
               disabled={isFetching}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-md font-medium transition-colors"
+              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md font-medium transition-colors"
             >
-              {isFetching ? 'Advancing...' : 'Advance Phase'}
+              {isFetching ? 'Advancing...' : '⏭️ Advance Phase'}
             </button>
           )}
+        </div>
+
+        {/* Helpful note */}
+        <div className="pt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
+          💡 View detailed simulation data in the dashboard below
         </div>
       </div>
     </div>

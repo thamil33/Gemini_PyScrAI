@@ -96,3 +96,12 @@ export const llmService = {
     return handleResponse<LLMStatusResponse>(response);
   },
 };
+
+// Generic API client for other endpoints
+export const api = {
+  async get<T>(path: string): Promise<{ data: T }> {
+    const response = await fetch(`${API_BASE}${path}`);
+    const data = await handleResponse<T>(response);
+    return { data };
+  },
+};

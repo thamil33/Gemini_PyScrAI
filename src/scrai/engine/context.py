@@ -5,10 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-from ..data import ActionRepository, ActorRepository, EventRepository, SimulationRepository
+from ..data import Repository
 from ..llm import LLMService
 from ..scenarios import ScenarioService
-from ..models import SimulationState
+from ..models import Action, Actor, Event, SimulationState
 from ..models.simulation_state import SimulationPhase
 
 
@@ -17,10 +17,10 @@ class PhaseContext:
     """Context passed to each phase handler."""
 
     simulation: SimulationState
-    simulation_repository: SimulationRepository
-    actor_repository: ActorRepository
-    event_repository: EventRepository
-    action_repository: ActionRepository
+    simulation_repository: Repository[SimulationState]
+    actor_repository: Repository[Actor]
+    event_repository: Repository[Event]
+    action_repository: Repository[Action]
     llm_service: Optional[LLMService] = None
     scenario_service: Optional[ScenarioService] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
