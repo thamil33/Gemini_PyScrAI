@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .examples import SimpleTownScenario
+from .scenes.simple_town import SimpleTownScenario
 from .registry import ScenarioRegistry
 from .service import ScenarioService
 

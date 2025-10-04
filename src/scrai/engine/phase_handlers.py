@@ -235,12 +235,15 @@ class ActionCollectionPhaseHandler(BasePhaseHandler):
         simulation = context.simulation
         notes: List[str] = []
 
-        pending_actions = await context.action_repository.list_all(limit=None)
-        simulation.pending_action_ids = [
-            action.id
-            for action in pending_actions
-            if action.status not in {ActionStatus.COMPLETED, ActionStatus.CANCELLED}
-        ]
+        # Filter out completed/cancelled actions from the simulation's pending list
+        # Don't pull ALL actions - only process the ones assigned to this simulation
+        active_action_ids = []
+        for action_id in simulation.pending_action_ids:
+            action = await context.action_repository.get(action_id)
+            if action and action.status not in {ActionStatus.COMPLETED, ActionStatus.CANCELLED}:
+                active_action_ids.append(action_id)
+        
+        simulation.pending_action_ids = active_action_ids
         notes.append(
             f"Tracked {len(simulation.pending_action_ids)} pending actions for resolution."
         )

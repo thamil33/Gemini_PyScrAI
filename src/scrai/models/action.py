@@ -51,6 +51,7 @@ class Action(BaseModel):
     
     id: str = Field(..., description="Unique identifier for the action")
     actor_id: str = Field(..., description="ID of the actor performing this action")
+    simulation_id: Optional[str] = Field(default=None, description="ID of the simulation this action belongs to")
     type: ActionType = Field(..., description="Type/category of the action")
     
     # Action definition

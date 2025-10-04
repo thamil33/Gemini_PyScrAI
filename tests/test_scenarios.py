@@ -9,7 +9,7 @@ if str(ROOT / "src") not in sys.path:
 from scrai.models import SimulationState
 from scrai.models.simulation_state import SimulationPhase, SimulationStatus
 from scrai.scenarios import ScenarioContext
-from scrai.scenarios.examples import SimpleTownScenario
+from scrai.scenarios.scenes.simple_town import SimpleTownScenario
 
 
 def test_simple_town_scenario_seed_populates_context() -> None:

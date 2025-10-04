@@ -99,6 +99,11 @@ class LLMService:
         client = await self._get_or_create_client(provider_config)
         return await client.list_models()
 
+    def provider_names(self) -> List[str]:
+        """Return the configured provider names in priority order."""
+
+        return [cfg.name for cfg in self._provider_sequence()]
+
     async def validate(self) -> bool:
         """Validate all configured providers."""
 

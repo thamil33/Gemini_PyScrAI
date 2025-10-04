@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from ..models import Action, Actor, Event
-from ..models.action import ActionPriority, ActionType
-from ..models.actor import ActorType
-from ..models.event import EventType
-from .base import Scenario, ScenarioContext
+from ...models import Action, Actor, Event
+from ...models.action import ActionPriority, ActionType
+from ...models.actor import ActorType
+from ...models.event import EventType
+from ..base import Scenario, ScenarioContext
 
 
 class SimpleTownScenario(Scenario):

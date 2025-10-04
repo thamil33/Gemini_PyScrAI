@@ -123,6 +123,55 @@ An `LLMServiceConfig` combines a primary provider and optional fallbacks. The de
 
 The `OpenAICompatibleClient` class supports OpenRouter, LM Studio, LM Proxy, and any other OpenAI-compatible endpoints via configurable `base_url`, `model`, and headers. Future providers (e.g., Google Gemini) can implement their own `LLMClient` subclasses without changing callers.
 
+## HTTP API Contracts
+
+### `POST /api/simulations/{id}/actions`
+
+- **Purpose:** Inject a new action into the in-memory/runtime repositories while keeping CLI and API behavior aligned.
+- **Request Body:** [`ActionCreateInput`](#action-create-input) (`actor_id`, `intent`, optional `description`, `metadata`).
+- **Auto Actor Creation:** When `actor_id` does not exist, the API creates a lightweight `Actor` (default type `npc`) and links it to the simulation's `active_actor_ids`.
+- **Response:** [`SimulationDetail`](#simulation-detail-contract) representing the refreshed simulation state, including:
+    - `pending_actions`: `ActionSummary[]` (id, intent, status, priority, created_at, metadata)
+    - `pending_events`: `EventSummary[]`
+    - `actors`: `ActorSummary[]` derived from the simulation and pending entities
+    - `phase_log`: chronological notes collected from the phase engine
+    - `metadata`: passthrough of the simulation metadata payload
+- **Errors:**
+    - `404` if the simulation is missing
+    - `500` when repositories fail to persist updates
+
+### `POST /api/llm/check`
+
+- **Purpose:** Report LLM provider readiness without requiring external tooling.
+- **Response:** [`LLMStatusResponse`](#llmstatusresponse) with fields:
+    - `available`: `false` when the service is not configured or fails to initialize
+    - `ready`: result of `LLMService.validate()` (false when providers are unreachable)
+    - `providers`: ordered provider names from the runtime configuration
+    - `detail`: optional error message when validation fails
+- The endpoint never raises on provider failures; instead it reports status in the response body, making it safe for UI polling.
+
+### `GET /api/streams/simulations/{id}`
+
+- **Purpose:** Deliver real-time simulation updates via Server-Sent Events (SSE) while preserving the polling fallback.
+- **Event Envelope:** Each message conforms to `SimulationStreamEvent`:
+
+```json
+{
+    "event": "simulation.phase_advanced",
+    "simulation_id": "sim-1234",
+    "ts": "2025-10-04T12:34:56.123456Z",
+    "summary": { /* SimulationSummary payload */ },
+    "detail": { /* SimulationDetail payload (optional) */ },
+    "phase_result": { /* PhaseAdvanceResult payload when applicable */ },
+    "metadata": { "action_id": "act-5678" }
+}
+```
+
+- **Event Types:** `simulation.snapshot` (initial payload), `simulation.created`, `simulation.started`, `simulation.action_added`, `simulation.phase_advanced`, plus periodic `heartbeat` events carrying `{ "event": "heartbeat", "simulation_id": ..., "ts": ... }`.
+- **Backpressure Handling:** Per-simulation subscriber queues buffer up to 32 events; the newest event replaces the oldest buffered item when full.
+- **Heartbeats:** Sent every ~15 seconds to keep connections alive and allow the client to display last-known activity.
+- **Error Semantics:** The stream never emits error events; clients fall back to polling and retry with exponential backoff when the connection drops.
+
 ## Phase Engine Contract
 
 ### PhaseEngine Interface

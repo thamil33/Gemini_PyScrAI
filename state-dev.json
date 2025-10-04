@@ -1,0 +1,208 @@
+{
+  "actions": {
+    "action-briefing-start": {
+      "actor_id": "actor-mayor",
+      "approved_by": null,
+      "completed_at": null,
+      "created_at": "2025-09-30T19:39:39.036679",
+      "description": "Kick off the briefing with agenda overview.",
+      "generated_events": [],
+      "id": "action-briefing-start",
+      "intent": "Open the morning briefing with an overview of priorities",
+      "llm_parsed": false,
+      "metadata": {
+        "related_event": "event-briefing"
+      },
+      "modifications": [],
+      "outcome": null,
+      "parameters": {
+        "agenda": [
+          "health status",
+          "resource requests",
+          "community updates"
+        ]
+      },
+      "parsed_options": [],
+      "prerequisites": [],
+      "priority": "normal",
+      "requires_approval": false,
+      "resource_costs": {},
+      "scheduled_for": null,
+      "selected_option": null,
+      "source": "player",
+      "started_at": null,
+      "status": "pending",
+      "success_probability": null,
+      "target_actor_ids": [],
+      "target_location": null,
+      "type": "communication"
+    }
+  },
+  "actors": {
+    "actor-caretaker": {
+      "active": true,
+      "affiliations": [],
+      "attributes": {
+        "traits": {
+          "organization": "high",
+          "patience": "high"
+        }
+      },
+      "created_at": "2025-09-30T19:39:39.034003",
+      "id": "actor-caretaker",
+      "location": {
+        "name": "Community Center"
+      },
+      "metadata": {
+        "role": "operations"
+      },
+      "name": "Sam Lee",
+      "relationships": {},
+      "type": "npc",
+      "updated_at": "2025-09-30T19:39:39.034003",
+      "visibility": {}
+    },
+    "actor-doctor": {
+      "active": true,
+      "affiliations": [],
+      "attributes": {
+        "traits": {
+          "empathy": "high",
+          "innovation": "moderate"
+        }
+      },
+      "created_at": "2025-09-30T19:39:39.034003",
+      "id": "actor-doctor",
+      "location": {
+        "name": "Clinic"
+      },
+      "metadata": {
+        "role": "doctor"
+      },
+      "name": "Dr. Rivera",
+      "relationships": {},
+      "type": "npc",
+      "updated_at": "2025-09-30T19:39:39.034003",
+      "visibility": {}
+    },
+    "actor-mayor": {
+      "active": true,
+      "affiliations": [],
+      "attributes": {
+        "traits": {
+          "leadership": "high",
+          "openness": "moderate"
+        }
+      },
+      "created_at": "2025-09-30T19:39:39.034003",
+      "id": "actor-mayor",
+      "location": {
+        "name": "Town Hall"
+      },
+      "metadata": {
+        "role": "mayor"
+      },
+      "name": "Mayor Alex",
+      "relationships": {},
+      "type": "npc",
+      "updated_at": "2025-09-30T19:39:39.034003",
+      "visibility": {}
+    }
+  },
+  "events": {
+    "event-briefing": {
+      "affected_actors": [
+        "actor-mayor",
+        "actor-doctor",
+        "actor-caretaker"
+      ],
+      "approved_by": null,
+      "created_at": "2025-09-30T19:39:39.034003",
+      "description": "Daily meeting to sync on community needs and incidents.",
+      "effects": {},
+      "id": "event-briefing",
+      "location": null,
+      "metadata": {
+        "location": "Town Hall"
+      },
+      "modifications": [],
+      "parameters": {},
+      "requires_approval": false,
+      "resolved_at": null,
+      "scheduled_for": "2025-09-30T19:39:39.034003Z",
+      "scope": "local",
+      "source": "system",
+      "status": "pending",
+      "title": "Morning Briefing",
+      "trigger_action_id": null,
+      "trigger_event_id": null,
+      "type": "system"
+    }
+  },
+  "simulations": {
+    "sim-b863d230": {
+      "active_actor_ids": [
+        "actor-mayor",
+        "actor-doctor",
+        "actor-caretaker"
+      ],
+      "auto_approve_actions": false,
+      "auto_approve_events": false,
+      "completed_at": null,
+      "configuration": {},
+      "created_at": "2025-09-30T19:36:06.484042",
+      "current_phase": "action_collection",
+      "description": "",
+      "environment": {},
+      "error_count": 0,
+      "id": "sim-b863d230",
+      "last_error": null,
+      "last_snapshot_at": null,
+      "max_phases": 20,
+      "metadata": {
+        "phase_log": [
+          {
+            "notes": [
+              "Simulation started",
+              "Initialization phase complete"
+            ],
+            "phase": "initialize",
+            "timestamp": "2025-09-30T19:38:55.497340"
+          },
+          {
+            "notes": [
+              "Scenario 'simple_town' seeded with initial entities.",
+              "Registered 3 new actors from scenario 'simple_town'.",
+              "Generated 1 scenario-driven events.",
+              "Generated 1 scenario-driven actions."
+            ],
+            "phase": "event_generation",
+            "timestamp": "2025-09-30T19:39:39.038327"
+          }
+        ],
+        "scenario": {
+          "last_event_generation_at": "2025-09-30T19:39:39.038327",
+          "scenario_key": "simple_town",
+          "seeded": true,
+          "seeded_at": "2025-09-30T19:39:39.038327"
+        }
+      },
+      "name": "Local Sandbox",
+      "pending_action_ids": [
+        "action-briefing-start"
+      ],
+      "pending_event_ids": [
+        "event-briefing"
+      ],
+      "phase_number": 0,
+      "phase_statistics": {},
+      "researcher_mode": true,
+      "scenario_module": "simple_town",
+      "snapshot_count": 0,
+      "started_at": "2025-09-30T19:38:55.497340",
+      "status": "running",
+      "updated_at": "2025-09-30T19:39:39.038327",
+      "world_state": {}
+    }
+  }
+}

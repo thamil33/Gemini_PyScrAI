@@ -57,17 +57,17 @@ The CLI merges configuration from `config/settings.toml`, any overrides you supp
 
 ### Environment Variable Overrides
 
-Key overrides consumed by the runtime:
+Treat environment variables as overrides, not primary configuration. In most cases you only need them for secrets or one-off adjustments:
 
-| Variable | Purpose | Example |
+| Variable | When to use it | Example |
 | --- | --- | --- |
-| `SCRAI_BACKEND` | Default backend (`memory` or `firestore`) | `SCRAI_BACKEND=firestore`
-| `SCRAI_STATE_PATH` | Path to JSON state file for memory backend | `SCRAI_STATE_PATH=C:/scrai/state.json`
-| `SCRAI_FIRESTORE_PROJECT_ID` | Google Cloud project ID | `SCRAI_FIRESTORE_PROJECT_ID=my-project`
-| `SCRAI_FIRESTORE_CREDENTIALS` | Path to service-account JSON | `SCRAI_FIRESTORE_CREDENTIALS=C:/keys/service.json`
-| `SCRAI_SIMULATION_SCENARIO` | Override default scenario module | `SCRAI_SIMULATION_SCENARIO=custom_module`
+| `SCRAI_STATE_PATH` | Point the memory backend at a dedicated JSON file | `SCRAI_STATE_PATH="$PWD/state-dev.json"`
+| `SCRAI_BACKEND` | Flip between `memory` and `firestore` without editing settings | `SCRAI_BACKEND=firestore`
+| `SCRAI_LLM_PRIMARY_PROVIDER` | Temporarily switch the active provider (e.g., to `lm_proxy`) | `SCRAI_LLM_PRIMARY_PROVIDER=lm_proxy`
 
-Any environment variable prefixed with `SCRAI_` is automatically mapped to CLI options (thanks to `auto_envvar_prefix="SCRAI"`). For example, setting `SCRAI_BACKEND=firestore` removes the need to pass `--backend firestore` on every invocation.
+Firestore-specific overrides remain available when you need them (`SCRAI_FIRESTORE_PROJECT_ID`, `SCRAI_FIRESTORE_CREDENTIALS`, etc.), but they can usually live in `config/settings.toml` or a secret manager.
+
+Any variable prefixed with `SCRAI_` is automatically mapped to CLI options (thanks to `auto_envvar_prefix="SCRAI"`). For example, setting `SCRAI_BACKEND=firestore` removes the need to pass `--backend firestore` on every invocation.
 
 ### Firestore Backend Notes
 
@@ -105,6 +105,42 @@ export SCRAI_BACKEND=memory
 export SCRAI_STATE_PATH="$PWD/state.json"
 scrai simulation list
 ```
+
+## Quickstart: Local Development (Memory Backend)
+
+Use this abbreviated flow whenever you need a clean local sandbox backed by a dedicated JSON state file:
+
+1. **Pick a scratch state file** so you can reset easily:
+	```bash
+	export SCRAI_STATE_PATH="$PWD/state-dev.json"
+	export SCRAI_BACKEND=memory
+	```
+
+2. **Create a simulation** using the defaults from `config/settings.toml`:
+	```bash
+	scrai simulation create --name "Local Sandbox"
+	```
+	Copy the generated `sim-XXXX` identifier.
+
+3. **Advance the world** a phase at a time while you experiment:
+	```bash
+	export SIM_ID=<replace-with-output-id>
+	scrai simulation start "$SIM_ID"
+	scrai simulation advance "$SIM_ID"
+	```
+
+4. **Inspect and iterate** as you tweak code:
+	```bash
+	scrai simulation show "$SIM_ID" --details
+	scrai action inject "$SIM_ID" --actor-id actor-dev --intent "Test workflow" --auto-create-actor
+	```
+
+5. **Reset when finished** by removing the state file:
+	```bash
+	rm "$SCRAI_STATE_PATH"
+	```
+
+This workflow keeps your local runs isolated, reproducible, and disposable while you develop.
 
 ## Core Simulation Commands
 

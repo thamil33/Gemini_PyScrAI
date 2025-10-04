@@ -306,6 +306,7 @@ def action_inject(
     action = Action(
         id=action_id,
         actor_id=actor.id,
+        simulation_id=simulation_id,
         type=ActionType(action_type),
         intent=intent,
         description=description or intent,
